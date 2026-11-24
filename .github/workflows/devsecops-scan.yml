@@ -1,0 +1,30 @@
+# TrustScan Security Scan — managed by TrustScan
+#
+# TrustScan starts this workflow for each scan you run or schedule in the
+# TrustScan dashboard (on demand, on every push, nightly, on pull requests).
+# It does nothing when started any other way. TrustScan restores this file
+# as written at the next scan.
+name: TrustScan Security Scan
+run-name: Security Scan ${{ inputs.job_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: Scan job ID (set by TrustScan)
+        required: true
+        type: string
+      ticket:
+        description: One-time scan ticket (set by TrustScan)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  security-scan:
+    uses: cs14lab/scan-engine/.github/workflows/reusable-scan.yml@v2
+    with:
+      job_id: ${{ inputs.job_id }}
+      ticket: ${{ inputs.ticket }}
